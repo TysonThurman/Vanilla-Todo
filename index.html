@@ -4,17 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vanilla Todo</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="app.css">
+    <script src="https://kit.fontawesome.com/2f01a361dd.js" crossorigin="anonymous"></script>
 </head>
 <body>
+
+    <div class="header">
+        <h1 class="header-title">Vanilla Todo</h1>
+    </div>
+
+    <div class="main-container">
+        <div class="form-container">
+            <form class="todo-form" action="" method="">
+                <label class="label" for="input-todo">New Task: </label>
+                <input class="input-todo" type="text" name="input-todo">
+                <input type="submit" value="Add">
+            </form>
+        </div>
+        <div class="list-container">
+            <ul class="todo-list">
+                <!-- each todo will be looped and go here. dummy content for now -->
+                 <li class="todo-list__item">Todo #1 <i class="fa-solid fa-pencil edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can delete-todo-btn" style="color: #da1010;"></i></li>
+                 <li class="todo-list__item">Todo #2 <i class="fa-solid fa-pencil edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can delete-todo-btn" style="color: #da1010;"></i></li>
+                 <li class="todo-list__item">Todo #3 <i class="fa-solid fa-pencil edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can delete-todo-btn" style="color: #da1010;"></i></li>
+            </ul>
+        </div>
+
+    </div>
     
-<!-- Title of the app -->
-<!-- Input for new todos -->
-<!-- List of current todos -->
+
+
+
  <!-- Mark todo as completed checkbox -->
  <!-- Delete todo from list -->
 
-    
+
+
+
 <script src="app.js"></script>
 </body>
 </html>
