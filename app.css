@@ -1,0 +1,7 @@
+body {
+    font-family: 'Roboto', serif;
+}
+
+.edit-todo-btn, .delete-todo-btn {
+    cursor:pointer;
+}
