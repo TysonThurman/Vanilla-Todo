@@ -1,3 +1,5 @@
+import { todo } from './todo.js';
+
 var deleteBtnArray = document.getElementsByClassName("delete-todo-btn");
 
 for (let i = 0; i < deleteBtnArray.length; i++) {
@@ -17,3 +19,5 @@ function handleDelete() {
 function handleEdit() {
     console.log("Edit button clicked");
 }  
+
+var newToDo = new todo();
