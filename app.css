@@ -1,12 +1,3 @@
-/* body {
-    font-family: 'Roboto', serif;
-} */
-
-.edit-todo-btn, .delete-todo-btn {
-    cursor:pointer;
-}
-
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -25,7 +16,6 @@ body {
     margin: 0;
 }
 
-/* Header */
 .header {
     background-color: #4CAF50;
     width: 100%;
@@ -40,7 +30,6 @@ body {
     font-weight: bold;
 }
 
-/* Main Container */
 .main-container {
     width: 90%;
     max-width: 600px;
@@ -51,7 +40,6 @@ body {
     margin-top: 1.5rem;
 }
 
-/* Form */
 .form-container {
     margin-bottom: 1.5rem;
 }
@@ -96,7 +84,6 @@ input[type="submit"]:hover {
     background-color: #45a049;
 }
 
-/* Todo List */
 .list-container {
     margin-top: 1rem;
 }
@@ -107,8 +94,8 @@ input[type="submit"]:hover {
 
 .todo-list li {
     display: grid;
-    grid-template-columns: 1fr auto; /* Text takes available space, buttons fit content */
-    align-items: center; /* Center content vertically */
+    grid-template-columns: 1fr auto;
+    align-items: center;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -118,8 +105,8 @@ input[type="submit"]:hover {
 }
 
 .todo-list li .actions {
-    display: flex; /* Use flexbox for button spacing inside the actions container */
-    gap: 0.5rem; /* Adds space between buttons/icons */
+    display: flex;
+    gap: 0.5rem;
 }
 
 .todo-list li button {
@@ -138,6 +125,32 @@ input[type="submit"]:hover {
 .todo-list li:hover {
     background-color: #f1f1f1;
     transform: scale(1.01);
+}
+
+.task {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Checkbox and task text */
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%; /* Ensure the task spans the list item width */
+}
+
+.task-checkbox {
+    accent-color: #4CAF50; /* Modern checkbox styling */
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+}
+
+.task-text {
+    font-size: 1rem;
+    transition: color 0.3s, text-decoration 0.3s;
+}
+
+/* Strike-through and faded color when checkbox is checked */
+.task-checkbox:checked + .task-text {
+    text-decoration: line-through;
+    color: #888; /* Lighter color to show completion */
 }
 
 /* Responsive Design */

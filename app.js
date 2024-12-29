@@ -1,79 +1,71 @@
-const todoList = document.getElementById("todo-list");
+document.addEventListener("DOMContentLoaded", () => {
+    const todoList = document.getElementById("todo-list");
+    const todoForm = document.getElementById("todo-form");
+    const todoInput = document.getElementById("input-todo");
 
-var existingTodos = JSON.parse(localStorage.getItem("allTodos")) || [];
-
-if(existingTodos.length != 0) {
-    for (let i = 0; i < existingTodos.length; i++) {
-        var id = existingTodos[i]["id"];
-        var listItem = document.createElement("li");
-        listItem.className = 'todo-list__item';
-        listItem.innerHTML = `
-            <span>${existingTodos[i]["value"]}</span>
-            <div id="${existingTodos[i]["id"]}" class="actions">
-                <button id="${existingTodos[i]["id"]}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
-                <button id="${existingTodos[i]["id"]}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
-            </div>
-            `
-        listItem.setAttribute("id", id);
-        todoList.appendChild(listItem);
-    }
-}
-
-addEventListenerButtons();
-
-var todoForm = document.getElementById('todo-form');
-todoForm.addEventListener("submit", handleSubmit);
-
-function handleSubmit(e) {
-    e.preventDefault();
-    //add the todo objects to the local storage
-    var newTodoValue = document.getElementById('input-todo').value;
-    var id = "id" + Math.random().toString(16).slice(2);
-    var todoObject = {"id": id, "value": newTodoValue};
-    localStorage.setItem("newTodo", JSON.stringify(todoObject));
-    existingTodos.push(todoObject);
-    localStorage.setItem("allTodos", JSON.stringify(existingTodos));
-
-    //add new todo to the DOM list
-    var todoItem = document.createElement("li");
-    todoItem.className = 'todo-list__item';
-    todoItem.innerHTML = `
-    <span>${todoObject.value}</span>
-    <div id="${todoObject.id}" class="actions">
-        <button id="${todoObject.id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
-        <button id="${todoObject.id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
-    </div>
-    `
-    todoItem.setAttribute("id", id);
-    todoList.appendChild(todoItem);
-
-    //clear the input box
-    document.getElementById('input-todo').value = '';
-
-    addEventListenerButtons();
-}
-
-function addEventListenerButtons() {
-    const todoButtonArray = document.getElementsByClassName("todo-btn");
-
-    for (let i = 0; i < todoButtonArray.length; i++) {
-    todoButtonArray[i].addEventListener("click", handleClick);
-    }
-}
-
-function handleClick(e) {
-    if(this.classList.contains("delete-todo-btn")) {
-        //remove the item from DOM
-        var itemId = e.target.parentNode.id;
-        document.getElementById(itemId).remove();
-        //remove the item from localStorage
-        existingTodos = existingTodos.filter(todo => todo.id !== itemId);
-        localStorage.setItem("allTodos", JSON.stringify(existingTodos));
-
+    const loadTasks = () => {
+        var tasks = JSON.parse(localStorage.getItem("allTodos")) || [];
+        tasks.forEach(({ id, value, completed }) => {
+            addTaskToDOM(id, value, completed);
+        });
     }
 
-    if(this.classList.contains("edit-todo-btn")) {
-        console.log("Edit button clicked");
-        console.log(e.target.parentNode.id);
+    const saveTasks = () => {
+        const tasks = [];
+        document.querySelectorAll("#todo-list li").forEach((li) => {
+            const value = li.querySelector(".task-text").textContent;
+            const completed = li.querySelector(".task-checkbox").checked;
+            const id = li.querySelector(".task-checkbox").id;
+            tasks.push({ id, value, completed });
+        });
+        localStorage.setItem("allTodos", JSON.stringify(tasks));
     }
-}
+
+    const addTaskToDOM = (id, value, completed = false) => {
+            var listItem = document.createElement("li");
+            listItem.className = 'todo-list__item';
+            listItem.innerHTML = `
+                <label class="task">
+                    <input id="${id}" type="checkbox" class="task-checkbox" ${completed ? "checked" : ""}>
+                    <span class="task-text">${value}</span>
+                </label>
+                <div id="${id}" class="actions">
+                    <button id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
+                    <button id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
+                </div>
+                `
+            listItem.setAttribute("id", id);
+            todoList.appendChild(listItem);
+    }
+
+    todoForm.addEventListener("submit", handleSubmit);
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        var value = todoInput.value.trim();
+        var id = "id" + Math.random().toString(16).slice(2);
+        var completed = false;
+        if(value) {
+            addTaskToDOM(id, value, completed);
+            saveTasks();
+            todoInput.value = "";
+        }
+    }
+
+    // Listen for changes to checkboxes and delete buttons
+    todoList.addEventListener("change", (e) => {
+        if (e.target.classList.contains("task-checkbox")) {
+            saveTasks(); // Save state when checkbox is toggled
+        }
+    });
+
+    todoList.addEventListener("click", (e) => {
+        if (e.target.closest(".delete-btn")) {
+            const li = e.target.closest("li");
+            li.remove();
+            saveTasks(); // Save state after deletion
+        }
+    });
+
+    loadTasks();
+});
