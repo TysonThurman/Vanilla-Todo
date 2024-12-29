@@ -7,7 +7,13 @@ if(existingTodos.length != 0) {
         var id = existingTodos[i]["id"];
         var listItem = document.createElement("li");
         listItem.className = 'todo-list__item';
-        listItem.innerHTML = `${existingTodos[i]["value"]}<i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>`
+        listItem.innerHTML = `
+            <span>${existingTodos[i]["value"]}</span>
+            <div id="${existingTodos[i]["id"]}" class="actions">
+                <button id="${existingTodos[i]["id"]}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
+                <button id="${existingTodos[i]["id"]}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
+            </div>
+            `
         listItem.setAttribute("id", id);
         todoList.appendChild(listItem);
     }
@@ -31,7 +37,13 @@ function handleSubmit(e) {
     //add new todo to the DOM list
     var todoItem = document.createElement("li");
     todoItem.className = 'todo-list__item';
-    todoItem.innerHTML = `${todoObject.value} <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>`
+    todoItem.innerHTML = `
+    <span>${todoObject.value}</span>
+    <div id="${todoObject.id}" class="actions">
+        <button id="${todoObject.id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
+        <button id="${todoObject.id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
+    </div>
+    `
     todoItem.setAttribute("id", id);
     todoList.appendChild(todoItem);
 
