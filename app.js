@@ -49,12 +49,19 @@ function addEventListenerButtons() {
     }
 }
 
-function handleClick() {
+function handleClick(e) {
     if(this.classList.contains("delete-todo-btn")) {
-        console.log("delete button clicked");
+        //remove the item from DOM
+        var itemId = e.target.parentNode.id;
+        document.getElementById(itemId).remove();
+        //remove the item from localStorage
+        existingTodos = existingTodos.filter(todo => todo.id !== itemId);
+        localStorage.setItem("allTodos", JSON.stringify(existingTodos));
+
     }
 
     if(this.classList.contains("edit-todo-btn")) {
         console.log("Edit button clicked");
+        console.log(e.target.parentNode.id);
     }
 }
