@@ -39,6 +39,9 @@ function handleSubmit(e) {
     todoItem.innerHTML = `${todoObject.value} <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>`
     todoItem.setAttribute("id", id);
     todoList.appendChild(todoItem);
+
+    //clear the input box
+    document.getElementById('input-todo').value = '';
 }
 
 //Run this function when a button is clicked to edit or delete a button
