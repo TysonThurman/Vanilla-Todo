@@ -13,11 +13,7 @@ if(existingTodos.length != 0) {
     }
 }
 
-const todoButtonArray = document.getElementsByClassName("todo-btn");
-
-for (let i = 0; i < todoButtonArray.length; i++) {
-    todoButtonArray[i].addEventListener("click", handleClick);
-}
+addEventListenerButtons();
 
 var todoForm = document.getElementById('todo-form');
 todoForm.addEventListener("submit", handleSubmit);
@@ -33,7 +29,6 @@ function handleSubmit(e) {
     localStorage.setItem("allTodos", JSON.stringify(existingTodos));
 
     //add new todo to the DOM list
-    // var ul = document.getElementById("todo-list");
     var todoItem = document.createElement("li");
     todoItem.className = 'todo-list__item';
     todoItem.innerHTML = `${todoObject.value} <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>`
@@ -42,11 +37,19 @@ function handleSubmit(e) {
 
     //clear the input box
     document.getElementById('input-todo').value = '';
+
+    addEventListenerButtons();
 }
 
-//Run this function when a button is clicked to edit or delete a button
+function addEventListenerButtons() {
+    const todoButtonArray = document.getElementsByClassName("todo-btn");
+
+    for (let i = 0; i < todoButtonArray.length; i++) {
+    todoButtonArray[i].addEventListener("click", handleClick);
+    }
+}
+
 function handleClick() {
-    //if the button is a delete button, run todo.handleDelete
     if(this.classList.contains("delete-todo-btn")) {
         console.log("delete button clicked");
     }
