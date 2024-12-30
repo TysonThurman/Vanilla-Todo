@@ -38,9 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             todoList.appendChild(listItem);
     }
 
-    todoForm.addEventListener("submit", handleSubmit);
-
-    function handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
         var value = todoInput.value.trim();
         var id = "id" + Math.random().toString(16).slice(2);
@@ -52,7 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Listen for changes to checkboxes and delete buttons
+    todoForm.addEventListener("submit", handleSubmit);
+
+    // Listen for changes to checkboxe, edit and delete buttons
     todoList.addEventListener("change", (e) => {
         if (e.target.classList.contains("task-checkbox")) {
             saveTasks(); // Save state when checkbox is toggled
@@ -64,6 +64,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = e.target.closest("li");
             li.remove();
             saveTasks(); // Save state after deletion
+        }
+    });
+
+    todoList.addEventListener("click", (e) => {
+        if (e.target.closest(".edit-btn")) {
+            const li = e.target.closest("li");
+            //put the li input into edit mode
+            
+            //should we change edit button/icon to a checkmark to save the changes?
+            //Then we change it back to the edit button once saved? (maybe ENTER also saves the change)
+
+            saveTasks(); // Save state after edit is submitted
         }
     });
 
