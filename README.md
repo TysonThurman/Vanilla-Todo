@@ -4,4 +4,4 @@
 - [x] Prevent blank entries
 - [x] Add edit button logic
 - [x] Add save button logic
-- [ ] Put confirmation box on delete button action
+- [x] Put confirmation box on delete button action
