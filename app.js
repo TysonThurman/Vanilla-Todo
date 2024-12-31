@@ -52,33 +52,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
     todoForm.addEventListener("submit", handleSubmit);
 
-    // Listen for changes to checkboxe, edit and delete buttons
+    //Checkbox functionality
     todoList.addEventListener("change", (e) => {
         if (e.target.classList.contains("task-checkbox")) {
             saveTasks(); // Save state when checkbox is toggled
         }
     });
 
+    //Delete button functionality
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".delete-btn")) {
             const li = e.target.closest("li");
-            li.remove();
-            saveTasks(); // Save state after deletion
+
+            var confirmationDiv = document.createElement('div');
+            confirmationDiv.classList.add('confirmation-text');
+            confirmationDiv.innerHTML = `
+                <span>Confirm Deletion?</span> 
+                <button class="confirm-btn yes-btn">Yes</button> 
+                <button class="confirm-btn no-btn">No</button> 
+            `;
+            li.appendChild(confirmationDiv);
+            var buttons = document.querySelectorAll('.confirm-btn');
+            buttons.forEach((btn) => {
+                btn.addEventListener("click", (e) => {
+                    if (e.target.classList.contains('yes-btn')) {
+                        console.log("Yes confirmation button clicked");
+                        li.remove();
+                        saveTasks();
+                    }
+                    if (e.target.classList.contains('no-btn')) {
+                        console.log("No confirmation button clicked");
+                        confirmationDiv.remove();
+                    }
+                });
+            })
         }
     });
 
-    //edit button functionality
+    //Edit button functionality
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".edit-btn")) {
             const li = e.target.closest("li");
-
             const span = li.querySelector('span'); //target the text itself inside the li
             const label = li.querySelector('label'); //grab the label so I can replace it's child text below
             const buttonContainer = li.querySelector('.actions');
 
             //Change the button entirely
             const id = li.querySelector(".edit-btn").id;
-            
+
             buttonContainer.innerHTML = `
                 <button id="${id}" class="save-btn">
                     <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
@@ -115,12 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    //save button functionality
+    //Save button functionality
     todoList.addEventListener("click", (e) => {
         if(e.target.closest(".save-btn")) {
             const li = e.target.closest("li");
-
-            // const span = li.querySelector('span'); //target the text itself inside the li
             const label = li.querySelector('label'); //grab the label so I can replace it's child text below
             const buttonContainer = li.querySelector('.actions');
             const id = li.querySelector(".save-btn").id;

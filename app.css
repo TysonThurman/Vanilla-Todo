@@ -153,6 +153,10 @@ input[type="submit"]:hover {
     color: #888; /* Lighter color to show completion */
 }
 
+.confirmation-text {
+    color:red;
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .todo-form {
