@@ -67,15 +67,81 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    //edit button functionality
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".edit-btn")) {
             const li = e.target.closest("li");
-            //put the li input into edit mode
-            
-            //should we change edit button/icon to a checkmark to save the changes?
-            //Then we change it back to the edit button once saved? (maybe ENTER also saves the change)
 
-            saveTasks(); // Save state after edit is submitted
+            const span = li.querySelector('span'); //target the text itself inside the li
+            const label = li.querySelector('label'); //grab the label so I can replace it's child text below
+            const buttonContainer = li.querySelector('.actions');
+
+            //Change the button entirely
+            const id = li.querySelector(".edit-btn").id;
+            
+            buttonContainer.innerHTML = `
+                <button id="${id}" class="save-btn">
+                    <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
+                </button>
+                <button id="${id}" class="delete-btn">
+                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                </button>
+            `;
+
+            //replace the todo text with an edit input field
+            var editInput = document.createElement("input");
+            editInput.setAttribute("type", "text");
+            editInput.setAttribute("value", li.innerText);
+            editInput.classList.add("edit-input");
+            label.replaceChild(editInput, span);
+
+            //Save the change if the Enter button is pressed while in the input field.
+            editInput.addEventListener("keydown", (e) => {
+                if(e.key == 'Enter') {
+                    console.log(editInput.value);
+                    label.replaceChild(span, editInput);
+                    span.innerText = editInput.value;
+                    buttonContainer.innerHTML = `
+                        <button id="${id}" class="edit-btn">
+                            <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+                        </button>
+                        <button id="${id}" class="delete-btn">
+                            <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                        </button>
+                    `;
+                    saveTasks();
+                } 
+            });
+        }
+    });
+
+    //save button functionality
+    todoList.addEventListener("click", (e) => {
+        if(e.target.closest(".save-btn")) {
+            const li = e.target.closest("li");
+
+            // const span = li.querySelector('span'); //target the text itself inside the li
+            const label = li.querySelector('label'); //grab the label so I can replace it's child text below
+            const buttonContainer = li.querySelector('.actions');
+            const id = li.querySelector(".save-btn").id;
+
+            // //replace the todo text with an edit input field
+            var editInput = document.querySelector('.edit-input');
+            const span =document.createElement('span');
+            span.classList.add('task-text');
+            span.innerText = editInput.value;
+
+            label.replaceChild(span, editInput);
+            span.innerText = editInput.value;
+            buttonContainer.innerHTML = `
+                <button id="${id}" class="edit-btn">
+                    <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+                </button>
+                <button id="${id}" class="delete-btn">
+                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                </button>
+            `;
+            saveTasks();
         }
     });
 

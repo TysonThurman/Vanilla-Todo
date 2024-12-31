@@ -142,7 +142,7 @@ input[type="submit"]:hover {
     cursor: pointer;
 }
 
-.task-text {
+.task-text, input {
     font-size: 1rem;
     transition: color 0.3s, text-decoration 0.3s;
 }
