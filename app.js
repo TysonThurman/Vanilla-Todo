@@ -55,37 +55,43 @@ document.addEventListener("DOMContentLoaded", () => {
     //Checkbox functionality
     todoList.addEventListener("change", (e) => {
         if (e.target.classList.contains("task-checkbox")) {
-            saveTasks(); // Save state when checkbox is toggled
+            saveTasks();
         }
     });
 
     //Delete button functionality
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".delete-btn")) {
+            const parentButton = e.target.parentNode;
             const li = e.target.closest("li");
-
+            const id = li.id;
             var confirmationDiv = document.createElement('div');
-            confirmationDiv.classList.add('confirmation-text');
+            confirmationDiv.classList.add(`confirmation-text-${id}`);
+            confirmationDiv.setAttribute("id", id);
             confirmationDiv.innerHTML = `
                 <span>Confirm Deletion?</span> 
-                <button class="confirm-btn yes-btn">Yes</button> 
-                <button class="confirm-btn no-btn">No</button> 
+                <button id="${id}" class="confirm-btn yes-btn">Yes</button> 
+                <button id="${id}" class="confirm-btn no-btn">No</button> 
             `;
             li.appendChild(confirmationDiv);
             var buttons = document.querySelectorAll('.confirm-btn');
             buttons.forEach((btn) => {
                 btn.addEventListener("click", (e) => {
                     if (e.target.classList.contains('yes-btn')) {
-                        console.log("Yes confirmation button clicked");
-                        li.remove();
-                        saveTasks();
+                        if(li.id === btn.id) {
+                            li.remove();
+                            saveTasks();
+                        }
                     }
                     if (e.target.classList.contains('no-btn')) {
-                        console.log("No confirmation button clicked");
-                        confirmationDiv.remove();
+                        if(confirmationDiv.id === btn.id) {
+                            confirmationDiv.remove();
+                            parentButton.disabled = false;
+                        }
                     }
                 });
             })
+            parentButton.disabled = true;
         }
     });
 

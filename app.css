@@ -153,8 +153,12 @@ input[type="submit"]:hover {
     color: #888; /* Lighter color to show completion */
 }
 
-.confirmation-text {
+[class^="confirmation-text-"] {
     color:red;
+}
+
+.hidden {
+    display: none !important;
 }
 
 /* Responsive Design */
