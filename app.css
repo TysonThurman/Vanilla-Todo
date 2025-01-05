@@ -102,6 +102,7 @@ input[type="submit"]:hover {
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
     transition: background-color 0.3s, transform 0.2s;
+    overflow-wrap: anywhere;
 }
 
 .todo-list li .actions {
