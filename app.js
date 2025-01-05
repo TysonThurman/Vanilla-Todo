@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".edit-btn")) {
             const li = e.target.closest("li");
-            const span = li.querySelector('span'); //target the text itself inside the li
-            const label = li.querySelector('label'); //grab the label so I can replace it's child text below
+            const span = li.querySelector('span');
+            const label = li.querySelector('label');
             const buttonContainer = li.querySelector('.actions');
 
             //Change the button entirely
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     todoList.addEventListener("click", (e) => {
         if(e.target.closest(".save-btn")) {
             const li = e.target.closest("li");
-            const label = li.querySelector('label'); //grab the label so I can replace it's child text below
+            const label = li.querySelector('label');
             const buttonContainer = li.querySelector('.actions');
             const id = li.querySelector(".save-btn").id;
 
