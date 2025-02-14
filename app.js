@@ -125,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
             //Save the change if the Enter button is pressed while in the input field.
             editInput.addEventListener("keydown", (e) => {
                 if(e.key == 'Enter') {
-                    console.log(editInput.value);
                     label.replaceChild(span, editInput);
                     span.innerText = editInput.value;
                     buttonContainer.innerHTML = `
