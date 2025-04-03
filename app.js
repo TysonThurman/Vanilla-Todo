@@ -2,6 +2,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const todoList = document.getElementById("todo-list");
     const todoForm = document.getElementById("todo-form");
     const todoInput = document.getElementById("input-todo");
+    const modeSwitch = document.getElementById("mode-switch-container");
+
+    const switchMode = (e) => {
+        if(e.target.classList.contains('light') || e.target.classList.contains('fa-sun')){
+            document.getElementsByTagName('body')[0].classList.remove('darkmode');
+        }
+        if(e.target.classList.contains('dark') || e.target.classList.contains('fa-moon')){
+            document.getElementsByTagName('body')[0].classList.add('darkmode');
+        };
+
+    }
+
+    modeSwitch.addEventListener('click', switchMode);
 
     const loadTasks = () => {
         var tasks = JSON.parse(localStorage.getItem("allTodos")) || [];
@@ -23,15 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const addTaskToDOM = (id, value, completed = false) => {
             var listItem = document.createElement("li");
-            listItem.className = 'todo-list__item';
             listItem.innerHTML = `
                 <label class="task">
                     <input id="${id}" type="checkbox" class="task-checkbox" ${completed ? "checked" : ""}>
                     <span class="task-text">${value}</span>
                 </label>
                 <div id="${id}" class="actions">
-                    <button id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
-                    <button id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
+                    <button id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i></button>
+                    <button id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i></button>
                 </div>
                 `
             listItem.setAttribute("id", id);
@@ -108,10 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             buttonContainer.innerHTML = `
                 <button id="${id}" class="save-btn">
-                    <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
+                    <i class="fa-solid fa-check todo-btn save-todo-btn" ></i>
                 </button>
                 <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
                 </button>
             `;
 
