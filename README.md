@@ -1,7 +1,7 @@
-### Checklist for project
+# Vanilla Todo App
+### Please feel free to contribute!
+### If you see any issues/bugs or just cool features you'd like to add, please submit an Issue or Pull Request.
 
-- [ ] Add dark mode and theme toggle button
-- [x] Prevent blank entries
-- [x] Add edit button logic
-- [x] Add save button logic
-- [x] Put confirmation box on delete button action
+Open to ideas! Let's have fun and code together!
+
+![alt text](screenshot.png)
