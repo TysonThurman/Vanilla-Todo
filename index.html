@@ -16,13 +16,15 @@
 
     <div class="main-container">
         <div class="form-container">
-            <form id="todo-form" class="todo-form">
+            <form id="todo-form" class="todo-form" aria-label="Add a new task">
                 <label class="label" for="input-todo">New Task: </label>
-                <input id="input-todo" class="input-todo" type="text" name="input-todo">
-                <input type="submit" value="Add">
+                <input id="input-todo" class="input-todo" type="text" name="input-todo"
+                placeholder="Add your new task">
+
+                <input type="submit" value="Add" aria-label="Add task">
             </form>
         </div>
-        <div class="list-container">
+        <div class="list-container" aria-label="Task list">
             <ul id="todo-list" class="todo-list">
             </ul>
         </div>

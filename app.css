@@ -12,21 +12,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 75vh;
-    margin: 0;
 }
 
 .header {
     background-color: #2a9d8f;
     width: 100%;
     text-align: center;
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-title {
     color: #fff;
-    font-size: 2rem;
+    font-size: 2.3rem;
     font-weight: bold;
 }
 
@@ -81,7 +79,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #2a9d8f;
+    background-color: #3c8e84;
 }
 
 .list-container {
