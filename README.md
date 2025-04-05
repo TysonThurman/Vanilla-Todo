@@ -5,10 +5,10 @@
 
 Open to ideas! Let's have fun and code together!
 
-![alt text](screenshot.png)
-
-To get the app running, please compile the app.ts Typescript file using tsc:
+**To get the app running, please compile the app.ts Typescript file using tsc:**
 
 `tsc app.ts`
 
 This will create the app.js file for you that is already referenced in the index.html file so your javascript will now run.
+
+![alt text](screenshot.png)
