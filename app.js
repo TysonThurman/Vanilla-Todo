@@ -2,6 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const todoList = document.getElementById("todo-list");
     const todoForm = document.getElementById("todo-form");
     const todoInput = document.getElementById("input-todo");
+    const deleteModal = document.getElementById("delete-modal");
+    const cancelDeleteBtn = document.getElementById("cancel-delete");
+    const confirmDeleteBtn = document.getElementById("confirm-delete");
+    
+    let taskToDelete = null;
 
     const loadTasks = () => {
         var tasks = JSON.parse(localStorage.getItem("allTodos")) || [];
@@ -62,36 +67,68 @@ document.addEventListener("DOMContentLoaded", () => {
     //Delete button functionality
     todoList.addEventListener("click", (e) => {
         if (e.target.closest(".delete-btn")) {
-            const parentButton = e.target.parentNode;
             const li = e.target.closest("li");
-            const id = li.id;
-            var confirmationDiv = document.createElement('div');
-            confirmationDiv.classList.add(`confirmation-text-${id}`);
-            confirmationDiv.setAttribute("id", id);
-            confirmationDiv.innerHTML = `
-                <span>Confirm Deletion?</span> 
-                <button id="${id}" class="confirm-btn yes-btn">Yes</button> 
-                <button id="${id}" class="confirm-btn no-btn">No</button> 
-            `;
-            li.appendChild(confirmationDiv);
-            var buttons = document.querySelectorAll('.confirm-btn');
-            buttons.forEach((btn) => {
-                btn.addEventListener("click", (e) => {
-                    if (e.target.classList.contains('yes-btn')) {
-                        if(li.id === btn.id) {
-                            li.remove();
-                            saveTasks();
-                        }
-                    }
-                    if (e.target.classList.contains('no-btn')) {
-                        if(confirmationDiv.id === btn.id) {
-                            confirmationDiv.remove();
-                            parentButton.disabled = false;
-                        }
-                    }
-                });
-            })
-            parentButton.disabled = true;
+            taskToDelete = li;
+            
+            // Highlight the item to be deleted
+            li.classList.add("todo-item-deleting");
+            
+            // Show the modal
+            deleteModal.classList.add("active");
+            
+            // Focus on cancel by default (safer option)
+            cancelDeleteBtn.focus();
+        }
+    });
+    
+    // Handle cancel delete
+    cancelDeleteBtn.addEventListener("click", () => {
+        if (taskToDelete) {
+            taskToDelete.classList.remove("todo-item-deleting");
+            taskToDelete = null;
+        }
+        deleteModal.classList.remove("active");
+    });
+    
+    // Handle confirm delete
+    confirmDeleteBtn.addEventListener("click", () => {
+        if (taskToDelete) {
+            taskToDelete.remove();
+            saveTasks();
+        }
+        deleteModal.classList.remove("active");
+        taskToDelete = null;
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && deleteModal.classList.contains("active")) {
+            if (taskToDelete) {
+                taskToDelete.classList.remove("todo-item-deleting");
+                taskToDelete = null;
+            }
+            deleteModal.classList.remove("active");
+        }
+        
+        // Confirm with Enter key when modal is active
+        if (e.key === "Enter" && deleteModal.classList.contains("active")) {
+            if (taskToDelete) {
+                taskToDelete.remove();
+                saveTasks();
+            }
+            deleteModal.classList.remove("active");
+            taskToDelete = null;
+        }
+    });
+    
+    // Close modal if clicking outside the modal content
+    deleteModal.addEventListener("click", (e) => {
+        if (e.target === deleteModal) {
+            if (taskToDelete) {
+                taskToDelete.classList.remove("todo-item-deleting");
+                taskToDelete = null;
+            }
+            deleteModal.classList.remove("active");
         }
     });
 
