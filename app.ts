@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const todoInput = document.getElementById("input-todo") as HTMLInputElement | null;
     if(!todoInput) return;
     const modeSwitch = document.getElementById("mode-switch-container");
-    if(!modeSwitch) return;
+    if(!modeSwitch) return
 
     const switchMode = (e) => {
         if(e.target.classList.contains('light') || e.target.classList.contains('fa-sun')){
