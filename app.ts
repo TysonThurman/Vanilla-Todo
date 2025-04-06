@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const loadTasks = () : void => {
         var tasks : Task[] = JSON.parse(localStorage.getItem("allTodos") || "[]");
+        // Sort tasks - incomplete tasks first, completed tasks at the bottom
+        tasks.sort((a, b) => Number(a.completed) - Number(b.completed));
         tasks.forEach(({ id, value, completed }) => {
             addTaskToDOM(id, value, completed);
         });
@@ -52,7 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 `
             listItem.setAttribute("id", id);
-            todoList.appendChild(listItem);
+            
+            // Add completed tasks to the bottom, uncompleted tasks to the top
+            if (completed) {
+                todoList.appendChild(listItem);
+            } else {
+                todoList.prepend(listItem);
+            }
     }
 
     const handleSubmit = (e : Event) => {
@@ -72,6 +80,17 @@ document.addEventListener("DOMContentLoaded", () => {
     //Checkbox functionality
     todoList.addEventListener("change", (e : Event) => {
         if ((e.target as HTMLElement ).classList.contains("task-checkbox")) {
+            const checkbox = e.target as HTMLInputElement;
+            const listItem = checkbox.closest("li");
+            
+            if (listItem && checkbox.checked) {
+                // Move completed task to the bottom of the list
+                todoList.appendChild(listItem);
+            } else if (listItem && !checkbox.checked) {
+                // Move uncompleted task to the top of the list
+                todoList.prepend(listItem);
+            }
+            
             saveTasks();
         }
     });
