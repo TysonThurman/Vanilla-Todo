@@ -126,6 +126,60 @@ input[type="submit"]:hover {
     transform: scale(1.01);
 }
 
+/* Edit mode styling */
+.editing {
+    background-color: #f0f7f6 !important;
+    border-left: 3px solid #2a9d8f !important;
+    box-shadow: 0 0 5px rgba(42, 157, 143, 0.3);
+    transition: all 0.3s ease;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #2a9d8f;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    background-color: white;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-input:focus {
+    border-color: #2a9d8f;
+    box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.2);
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.save-btn {
+    background-color: rgba(42, 157, 143, 0.1);
+}
+
+.save-btn:hover {
+    background-color: rgba(42, 157, 143, 0.2);
+}
+
+.cancel-btn {
+    background-color: rgba(218, 16, 16, 0.1);
+}
+
+.cancel-btn:hover {
+    background-color: rgba(218, 16, 16, 0.2);
+}
+
 .task {
     display: grid;
     grid-template-columns: auto 1fr; /* Checkbox and task text */

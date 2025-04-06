@@ -163,17 +163,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const span = li.querySelector('span') as HTMLSpanElement;
             const label = li.querySelector('label') as HTMLLabelElement;
             const buttonContainer = li.querySelector('.actions') as HTMLDivElement;
+            
+            // Add editing class for visual feedback
+            li.classList.add('editing');
 
-            //Change the button entirely
-            const id = (li.querySelector(".edit-btn") as HTMLElement).id;
+            //Change the button container
+            const id = li.id;
 
             buttonContainer.innerHTML = `
-                <button id="${id}" class="save-btn">
-                    <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
-                </button>
-                <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
-                </button>
+                <div class="edit-buttons">
+                    <button id="${id}" class="save-btn" title="Save changes">
+                        <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
+                    </button>
+                    <button id="${id}" class="cancel-btn" title="Cancel editing">
+                        <i class="fa-solid fa-xmark todo-btn cancel-todo-btn" style="color: #da1010;"></i>
+                    </button>
+                </div>
             `;
 
             //replace the todo text with an edit input field
@@ -182,25 +187,55 @@ document.addEventListener("DOMContentLoaded", () => {
             editInput.value = span.innerText;
             editInput.classList.add("edit-input");
             label.replaceChild(editInput, span);
+            
+            // Auto focus the input field
+            editInput.focus();
+
+            // Save the original text for cancel functionality
+            editInput.dataset.originalText = span.innerText;
 
             //Save the change if the Enter button is pressed while in the input field.
             editInput.addEventListener("keydown", (e) => {
-                if(e.key == 'Enter') {
-                    label.replaceChild(span, editInput);
-                    span.innerText = editInput.value;
-                    buttonContainer.innerHTML = `
-                        <button id="${id}" class="edit-btn">
-                            <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
-                        </button>
-                        <button id="${id}" class="delete-btn">
-                            <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
-                        </button>
-                    `;
-                    saveTasks();
-                } 
+                if(e.key === 'Enter') {
+                    saveEdit(li, label, editInput, span, buttonContainer, id);
+                } else if(e.key === 'Escape') {
+                    cancelEdit(li, label, editInput, span, buttonContainer, id);
+                }
             });
         }
     });
+
+    // Helper function to save edits
+    const saveEdit = (li: HTMLElement, label: HTMLLabelElement, editInput: HTMLInputElement, 
+                      span: HTMLSpanElement, buttonContainer: HTMLDivElement, id: string) => {
+        span.innerText = editInput.value;
+        label.replaceChild(span, editInput);
+        restoreButtons(buttonContainer, id);
+        li.classList.remove('editing');
+        saveTasks();
+    }
+
+    // Helper function to cancel edits
+    const cancelEdit = (li: HTMLElement, label: HTMLLabelElement, editInput: HTMLInputElement, 
+                        span: HTMLSpanElement, buttonContainer: HTMLDivElement, id: string) => {
+        // Restore original text
+        span.innerText = editInput.dataset.originalText || '';
+        label.replaceChild(span, editInput);
+        restoreButtons(buttonContainer, id);
+        li.classList.remove('editing');
+    }
+
+    // Helper function to restore buttons
+    const restoreButtons = (buttonContainer: HTMLDivElement, id: string) => {
+        buttonContainer.innerHTML = `
+            <button id="${id}" class="edit-btn" title="Edit task">
+                <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+            </button>
+            <button id="${id}" class="delete-btn" title="Delete task">
+                <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+            </button>
+        `;
+    }
 
     //Save button functionality
     todoList.addEventListener("click", (e) => {
@@ -212,23 +247,38 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!buttonContainer) return;
             const id = li.id;
 
-            // //replace the todo text with an edit input field
             var editInput = li.querySelector('.edit-input') as HTMLInputElement | null;
             if (!editInput) return;
-            const span =document.createElement('span');
+            const span = document.createElement('span');
             span.classList.add('task-text');
             span.innerText = (editInput as HTMLInputElement).value;
 
             label.replaceChild(span, (editInput as HTMLInputElement));
-            buttonContainer.innerHTML = `
-                <button id="${id}" class="edit-btn">
-                    <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
-                </button>
-                <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
-                </button>
-            `;
+            restoreButtons(buttonContainer, id);
+            li.classList.remove('editing');
             saveTasks();
+        }
+    });
+
+    // Cancel button functionality
+    todoList.addEventListener("click", (e) => {
+        if((e.target as HTMLElement).closest(".cancel-btn")) {
+            const li = (e.target as HTMLElement).closest("li");
+            if(!li) return;
+            const label = li.querySelector('label') as HTMLLabelElement;
+            const buttonContainer = li.querySelector('.actions') as HTMLDivElement | null;
+            if (!buttonContainer) return;
+            const id = li.id;
+
+            var editInput = li.querySelector('.edit-input') as HTMLInputElement | null;
+            if (!editInput) return;
+            const span = document.createElement('span');
+            span.classList.add('task-text');
+            span.innerText = editInput.dataset.originalText || '';
+
+            label.replaceChild(span, (editInput as HTMLInputElement));
+            restoreButtons(buttonContainer, id);
+            li.classList.remove('editing');
         }
     });
 
