@@ -19,6 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     modeSwitch.addEventListener('click', switchMode);
+    const modalOverlay = document.getElementById("modal-overlay") as HTMLDivElement | null;
+    if(!modalOverlay) return;
+    const confirmYesBtn = document.getElementById("confirm-yes") as HTMLButtonElement | null;
+    if(!confirmYesBtn) return;
+    const confirmNoBtn = document.getElementById("confirm-no") as HTMLButtonElement | null;
+    if(!confirmNoBtn) return;
+    
+    // Track the current task being considered for deletion
+    let currentTaskToDelete: HTMLLIElement | null = null;
 
     interface Task {
         id: string;
@@ -27,6 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const loadTasks = () : void => {
         var tasks : Task[] = JSON.parse(localStorage.getItem("allTodos") || "[]");
+        // Sort tasks - incomplete tasks first, completed tasks at the bottom
+        tasks.sort((a, b) => Number(a.completed) - Number(b.completed));
         tasks.forEach(({ id, value, completed }) => {
             addTaskToDOM(id, value, completed);
         });
@@ -56,7 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 `
             listItem.setAttribute("id", id);
-            todoList.appendChild(listItem);
+            
+            // Add completed tasks to the bottom, uncompleted tasks to the top
+            if (completed) {
+                todoList.appendChild(listItem);
+            } else {
+                todoList.prepend(listItem);
+            }
     }
 
     const handleSubmit = (e : Event) => {
@@ -76,6 +93,17 @@ document.addEventListener("DOMContentLoaded", () => {
     //Checkbox functionality
     todoList.addEventListener("change", (e : Event) => {
         if ((e.target as HTMLElement ).classList.contains("task-checkbox")) {
+            const checkbox = e.target as HTMLInputElement;
+            const listItem = checkbox.closest("li");
+            
+            if (listItem && checkbox.checked) {
+                // Move completed task to the bottom of the list
+                todoList.appendChild(listItem);
+            } else if (listItem && !checkbox.checked) {
+                // Move uncompleted task to the top of the list
+                todoList.prepend(listItem);
+            }
+            
             saveTasks();
         }
     });
@@ -83,37 +111,60 @@ document.addEventListener("DOMContentLoaded", () => {
     //Delete button functionality
     todoList.addEventListener("click", (e : Event) => {
         if ((e.target as HTMLElement).closest(".delete-btn")) {
-            const parentButton = (e.target as HTMLElement).closest("button") as HTMLButtonElement | null;
             const li = (e.target as HTMLElement).closest("li") as HTMLLIElement | null;
             if (!li) return;
-            const id = li.id;
-            var confirmationDiv = document.createElement('div');
-            confirmationDiv.classList.add(`confirmation-text-${id}`);
-            confirmationDiv.setAttribute("id", id);
-            confirmationDiv.innerHTML = `
-                <span>Confirm Deletion?</span> 
-                <button id="${id}" class="confirm-btn yes-btn">Yes</button> 
-                <button id="${id}" class="confirm-btn no-btn">No</button> 
-            `;
-            li.appendChild(confirmationDiv);
-            var buttons = document.querySelectorAll('.confirm-btn');
-            buttons.forEach((btn) => {
-                btn.addEventListener("click", (e) => {
-                    if ((e.target as HTMLElement).classList.contains('yes-btn')) {
-                        if(li.id === btn.id) {
-                            li.remove();
-                            saveTasks();
-                        }
-                    }
-                    if ((e.target as HTMLElement).classList.contains('no-btn')) {
-                        if(confirmationDiv.id === btn.id) {
-                            confirmationDiv.remove();
-                            if (parentButton) parentButton.disabled = true;
-                        }
-                    }
-                });
-            })
-            if (parentButton) parentButton.disabled = true;
+            
+            // Store reference to the task being deleted
+            currentTaskToDelete = li;
+            
+            // Show the modal - simplify animation
+            modalOverlay.classList.add('active');
+        }
+    });
+
+    // Handle confirm or cancel deletion
+    const handleDeleteConfirmation = (confirmed: boolean) => {
+        if (!currentTaskToDelete) return;
+        
+        setTimeout(() => {
+            if (confirmed && currentTaskToDelete) {
+                currentTaskToDelete.remove();
+                saveTasks();
+            }
+            
+            // Hide the modal and reset current task
+            modalOverlay.classList.remove('active');
+            currentTaskToDelete = null;
+        }, 150); // Reduce timeout for faster response
+    };
+
+    // Yes button for deletion confirmation
+    confirmYesBtn.addEventListener("click", () => {
+        handleDeleteConfirmation(true);
+    });
+
+    // No button for deletion cancellation
+    confirmNoBtn.addEventListener("click", () => {
+        handleDeleteConfirmation(false);
+    });
+
+    // Close modal when clicking outside of it
+    modalOverlay.addEventListener("click", (e: Event) => {
+        if (e.target === modalOverlay) {
+            handleDeleteConfirmation(false);
+        }
+    });
+
+    // Keyboard support for modal
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (!modalOverlay.classList.contains('active')) return;
+        
+        if (e.key === "Escape") {
+            e.preventDefault();
+            handleDeleteConfirmation(false);
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            handleDeleteConfirmation(true);
         }
     });
 
@@ -125,17 +176,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const span = li.querySelector('span') as HTMLSpanElement;
             const label = li.querySelector('label') as HTMLLabelElement;
             const buttonContainer = li.querySelector('.actions') as HTMLDivElement;
+            
+            // Add editing class for visual feedback
+            li.classList.add('editing');
 
-            //Change the button entirely
-            const id = (li.querySelector(".edit-btn") as HTMLElement).id;
+            //Change the button container
+            const id = li.id;
 
             buttonContainer.innerHTML = `
-                <button id="${id}" class="save-btn">
-                    <i class="fa-solid fa-check todo-btn save-todo-btn" ></i>
-                </button>
-                <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
-                </button>
+                <div class="edit-buttons">
+                    <button id="${id}" class="save-btn" title="Save changes">
+                        <i class="fa-solid fa-check todo-btn save-todo-btn"></i>
+                    </button>
+                    <button id="${id}" class="cancel-btn" title="Cancel editing">
+                        <i class="fa-solid fa-xmark todo-btn cancel-todo-btn"></i>
+                    </button>
+                </div>
             `;
 
             //replace the todo text with an edit input field
@@ -144,25 +200,55 @@ document.addEventListener("DOMContentLoaded", () => {
             editInput.value = span.innerText;
             editInput.classList.add("edit-input");
             label.replaceChild(editInput, span);
+            
+            // Auto focus the input field
+            editInput.focus();
+
+            // Save the original text for cancel functionality
+            editInput.dataset.originalText = span.innerText;
 
             //Save the change if the Enter button is pressed while in the input field.
             editInput.addEventListener("keydown", (e) => {
-                if(e.key == 'Enter') {
-                    label.replaceChild(span, editInput);
-                    span.innerText = editInput.value;
-                    buttonContainer.innerHTML = `
-                        <button id="${id}" class="edit-btn">
-                            <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
-                        </button>
-                        <button id="${id}" class="delete-btn">
-                            <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
-                        </button>
-                    `;
-                    saveTasks();
-                } 
+                if(e.key === 'Enter') {
+                    saveEdit(li, label, editInput, span, buttonContainer, id);
+                } else if(e.key === 'Escape') {
+                    cancelEdit(li, label, editInput, span, buttonContainer, id);
+                }
             });
         }
     });
+
+    // Helper function to save edits
+    const saveEdit = (li: HTMLElement, label: HTMLLabelElement, editInput: HTMLInputElement, 
+                      span: HTMLSpanElement, buttonContainer: HTMLDivElement, id: string) => {
+        span.innerText = editInput.value;
+        label.replaceChild(span, editInput);
+        restoreButtons(buttonContainer, id);
+        li.classList.remove('editing');
+        saveTasks();
+    }
+
+    // Helper function to cancel edits
+    const cancelEdit = (li: HTMLElement, label: HTMLLabelElement, editInput: HTMLInputElement, 
+                        span: HTMLSpanElement, buttonContainer: HTMLDivElement, id: string) => {
+        // Restore original text
+        span.innerText = editInput.dataset.originalText || '';
+        label.replaceChild(span, editInput);
+        restoreButtons(buttonContainer, id);
+        li.classList.remove('editing');
+    }
+
+    // Helper function to restore buttons
+    const restoreButtons = (buttonContainer: HTMLDivElement, id: string) => {
+        buttonContainer.innerHTML = `
+            <button id="${id}" class="edit-btn" title="Edit task">
+                <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
+            </button>
+            <button id="${id}" class="delete-btn" title="Delete task">
+                <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
+            </button>
+        `;
+    }
 
     //Save button functionality
     todoList.addEventListener("click", (e) => {
@@ -174,23 +260,38 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!buttonContainer) return;
             const id = li.id;
 
-            // //replace the todo text with an edit input field
             var editInput = li.querySelector('.edit-input') as HTMLInputElement | null;
             if (!editInput) return;
-            const span =document.createElement('span');
+            const span = document.createElement('span');
             span.classList.add('task-text');
             span.innerText = (editInput as HTMLInputElement).value;
 
             label.replaceChild(span, (editInput as HTMLInputElement));
-            buttonContainer.innerHTML = `
-                <button id="${id}" class="edit-btn">
-                    <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
-                </button>
-                <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
-                </button>
-            `;
+            restoreButtons(buttonContainer, id);
+            li.classList.remove('editing');
             saveTasks();
+        }
+    });
+
+    // Cancel button functionality
+    todoList.addEventListener("click", (e) => {
+        if((e.target as HTMLElement).closest(".cancel-btn")) {
+            const li = (e.target as HTMLElement).closest("li");
+            if(!li) return;
+            const label = li.querySelector('label') as HTMLLabelElement;
+            const buttonContainer = li.querySelector('.actions') as HTMLDivElement | null;
+            if (!buttonContainer) return;
+            const id = li.id;
+
+            var editInput = li.querySelector('.edit-input') as HTMLInputElement | null;
+            if (!editInput) return;
+            const span = document.createElement('span');
+            span.classList.add('task-text');
+            span.innerText = editInput.dataset.originalText || '';
+
+            label.replaceChild(span, (editInput as HTMLInputElement));
+            restoreButtons(buttonContainer, id);
+            li.classList.remove('editing');
         }
     });
 
