@@ -5,7 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!todoForm) return;
     const todoInput = document.getElementById("input-todo") as HTMLInputElement | null;
     if(!todoInput) return;
+    const modalOverlay = document.getElementById("modal-overlay") as HTMLDivElement | null;
+    if(!modalOverlay) return;
+    const confirmYesBtn = document.getElementById("confirm-yes") as HTMLButtonElement | null;
+    if(!confirmYesBtn) return;
+    const confirmNoBtn = document.getElementById("confirm-no") as HTMLButtonElement | null;
+    if(!confirmNoBtn) return;
     
+    // Track the current task being considered for deletion
+    let currentTaskToDelete: HTMLLIElement | null = null;
 
     interface Task {
         id: string;
@@ -71,37 +79,60 @@ document.addEventListener("DOMContentLoaded", () => {
     //Delete button functionality
     todoList.addEventListener("click", (e : Event) => {
         if ((e.target as HTMLElement).closest(".delete-btn")) {
-            const parentButton = (e.target as HTMLElement).closest("button") as HTMLButtonElement | null;
             const li = (e.target as HTMLElement).closest("li") as HTMLLIElement | null;
             if (!li) return;
-            const id = li.id;
-            var confirmationDiv = document.createElement('div');
-            confirmationDiv.classList.add(`confirmation-text-${id}`);
-            confirmationDiv.setAttribute("id", id);
-            confirmationDiv.innerHTML = `
-                <span>Confirm Deletion?</span> 
-                <button id="${id}" class="confirm-btn yes-btn">Yes</button> 
-                <button id="${id}" class="confirm-btn no-btn">No</button> 
-            `;
-            li.appendChild(confirmationDiv);
-            var buttons = document.querySelectorAll('.confirm-btn');
-            buttons.forEach((btn) => {
-                btn.addEventListener("click", (e) => {
-                    if ((e.target as HTMLElement).classList.contains('yes-btn')) {
-                        if(li.id === btn.id) {
-                            li.remove();
-                            saveTasks();
-                        }
-                    }
-                    if ((e.target as HTMLElement).classList.contains('no-btn')) {
-                        if(confirmationDiv.id === btn.id) {
-                            confirmationDiv.remove();
-                            if (parentButton) parentButton.disabled = true;
-                        }
-                    }
-                });
-            })
-            if (parentButton) parentButton.disabled = true;
+            
+            // Store reference to the task being deleted
+            currentTaskToDelete = li;
+            
+            // Show the modal - simplify animation
+            modalOverlay.classList.add('active');
+        }
+    });
+
+    // Handle confirm or cancel deletion
+    const handleDeleteConfirmation = (confirmed: boolean) => {
+        if (!currentTaskToDelete) return;
+        
+        setTimeout(() => {
+            if (confirmed && currentTaskToDelete) {
+                currentTaskToDelete.remove();
+                saveTasks();
+            }
+            
+            // Hide the modal and reset current task
+            modalOverlay.classList.remove('active');
+            currentTaskToDelete = null;
+        }, 150); // Reduce timeout for faster response
+    };
+
+    // Yes button for deletion confirmation
+    confirmYesBtn.addEventListener("click", () => {
+        handleDeleteConfirmation(true);
+    });
+
+    // No button for deletion cancellation
+    confirmNoBtn.addEventListener("click", () => {
+        handleDeleteConfirmation(false);
+    });
+
+    // Close modal when clicking outside of it
+    modalOverlay.addEventListener("click", (e: Event) => {
+        if (e.target === modalOverlay) {
+            handleDeleteConfirmation(false);
+        }
+    });
+
+    // Keyboard support for modal
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (!modalOverlay.classList.contains('active')) return;
+        
+        if (e.key === "Escape") {
+            e.preventDefault();
+            handleDeleteConfirmation(false);
+        } else if (e.key === "Enter") {
+            e.preventDefault();
+            handleDeleteConfirmation(true);
         }
     });
 
