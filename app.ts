@@ -51,13 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     <span class="task-text">${value}</span>
                 </label>
                 <div id="${id}" class="actions">
-<<<<<<< HEAD:app.js
                     <button id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i></button>
                     <button id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i></button>
-=======
-                    <button data-id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
-                    <button data-id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
->>>>>>> 002b040dd1bef9bd7270137b90ec5b578638a219:app.ts
                 </div>
                 `
             listItem.setAttribute("id", id);
@@ -157,10 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     span.innerText = editInput.value;
                     buttonContainer.innerHTML = `
                         <button id="${id}" class="edit-btn">
-                            <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+                            <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
                         </button>
                         <button id="${id}" class="delete-btn">
-                            <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                            <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
                         </button>
                     `;
                     saveTasks();
