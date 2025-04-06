@@ -184,10 +184,10 @@ document.addEventListener("DOMContentLoaded", () => {
             label.replaceChild(span, (editInput as HTMLInputElement));
             buttonContainer.innerHTML = `
                 <button id="${id}" class="edit-btn">
-                    <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+                    <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
                 </button>
                 <button id="${id}" class="delete-btn">
-                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                    <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
                 </button>
             `;
             saveTasks();
