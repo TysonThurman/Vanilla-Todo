@@ -46,7 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
                 `
             listItem.setAttribute("id", id);
-            todoList.appendChild(listItem);
+            
+            // Add completed tasks to the bottom, uncompleted tasks to the top
+            if (completed) {
+                todoList.appendChild(listItem);
+            } else {
+                todoList.prepend(listItem);
+            }
     }
 
     const handleSubmit = (e : Event) => {
