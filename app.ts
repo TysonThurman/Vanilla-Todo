@@ -5,6 +5,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!todoForm) return;
     const todoInput = document.getElementById("input-todo") as HTMLInputElement | null;
     if(!todoInput) return;
+    const modeSwitch = document.getElementById("mode-switch-container");
+    if(!modeSwitch) return
+
+    const switchMode = (e) => {
+        if(e.target.classList.contains('light') || e.target.classList.contains('fa-sun')){
+            document.getElementsByTagName('body')[0].classList.remove('darkmode');
+        }
+        if(e.target.classList.contains('dark') || e.target.classList.contains('fa-moon')){
+            document.getElementsByTagName('body')[0].classList.add('darkmode');
+        };
+
+    }
+
+    modeSwitch.addEventListener('click', switchMode);
     const modalOverlay = document.getElementById("modal-overlay") as HTMLDivElement | null;
     if(!modalOverlay) return;
     const confirmYesBtn = document.getElementById("confirm-yes") as HTMLButtonElement | null;
@@ -42,15 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const addTaskToDOM = (id: string, value: string, completed = false) => {
             var listItem = document.createElement("li");
-            listItem.className = 'todo-list__item';
             listItem.innerHTML = `
                 <label class="task">
                     <input id="${id}" type="checkbox" class="task-checkbox" ${completed ? "checked" : ""}>
                     <span class="task-text">${value}</span>
                 </label>
                 <div id="${id}" class="actions">
-                    <button data-id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i></button>
-                    <button data-id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i></button>
+                    <button id="${id}" class="edit-btn"><i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i></button>
+                    <button id="${id}" class="delete-btn"><i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i></button>
                 </div>
                 `
             listItem.setAttribute("id", id);
@@ -173,10 +186,10 @@ document.addEventListener("DOMContentLoaded", () => {
             buttonContainer.innerHTML = `
                 <div class="edit-buttons">
                     <button id="${id}" class="save-btn" title="Save changes">
-                        <i class="fa-solid fa-check todo-btn save-todo-btn" style="color: #0a4d80;"></i>
+                        <i class="fa-solid fa-check todo-btn save-todo-btn"></i>
                     </button>
                     <button id="${id}" class="cancel-btn" title="Cancel editing">
-                        <i class="fa-solid fa-xmark todo-btn cancel-todo-btn" style="color: #da1010;"></i>
+                        <i class="fa-solid fa-xmark todo-btn cancel-todo-btn"></i>
                     </button>
                 </div>
             `;
@@ -229,10 +242,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const restoreButtons = (buttonContainer: HTMLDivElement, id: string) => {
         buttonContainer.innerHTML = `
             <button id="${id}" class="edit-btn" title="Edit task">
-                <i class="fa-solid fa-pencil todo-btn edit-todo-btn" style="color: #0a4d80;"></i>
+                <i class="fa-solid fa-pencil todo-btn edit-todo-btn"></i>
             </button>
             <button id="${id}" class="delete-btn" title="Delete task">
-                <i class="fa-solid fa-trash-can todo-btn delete-todo-btn" style="color: #da1010;"></i>
+                <i class="fa-solid fa-trash-can todo-btn delete-todo-btn"></i>
             </button>
         `;
     }
