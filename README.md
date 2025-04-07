@@ -11,9 +11,9 @@ Open to ideas! Let's have fun and code together!
 
 This will create the app.js file for you that is already referenced in the index.html file so your javascript will now run.
 
-![alt text](/screenshots/image.png)
+![alt text](/screenshots/image1.png)
 
-![alt text](/screenshots/image-1.png)
+![alt text](/screenshots/image2.png)
 
 ## Thank you to all of our contributors!
 
