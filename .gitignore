@@ -1,2 +1,4 @@
 app.js
 .vscode
+node_modules
+package_lock.json
