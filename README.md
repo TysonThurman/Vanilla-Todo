@@ -14,3 +14,9 @@ This will create the app.js file for you that is already referenced in the index
 ![alt text](/screenshots/image.png)
 
 ![alt text](/screenshots/image-1.png)
+
+## Thank you to all of our contributors!
+
+<a href="https://github.com/TysonThurman/Vanilla-Todo/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=TysonThurman/Vanilla-Todo" />
+</a>
