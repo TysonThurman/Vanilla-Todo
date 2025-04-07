@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmNoBtn = document.getElementById("confirm-no") as HTMLButtonElement | null;
     if(!confirmNoBtn) return;
     
+    // Auto-focus the input field when the page loads
+    todoInput.focus();
+    
     // Track the current task being considered for deletion
     let currentTaskToDelete: HTMLLIElement | null = null;
 
@@ -117,6 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (confirmed && currentTaskToDelete) {
                 currentTaskToDelete.remove();
                 saveTasks();
+                // Refocus on input field after deletion
+                todoInput.focus();
             }
             
             // Hide the modal and reset current task
@@ -213,6 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
         restoreButtons(buttonContainer, id);
         li.classList.remove('editing');
         saveTasks();
+        // Refocus on input field after saving edit
+        todoInput.focus();
     }
 
     // Helper function to cancel edits
@@ -223,6 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
         label.replaceChild(span, editInput);
         restoreButtons(buttonContainer, id);
         li.classList.remove('editing');
+        // Refocus on input field after canceling edit
+        todoInput.focus();
     }
 
     // Helper function to restore buttons
@@ -257,6 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
             restoreButtons(buttonContainer, id);
             li.classList.remove('editing');
             saveTasks();
+            // Refocus on input field after saving edit
+            todoInput.focus();
         }
     });
 
@@ -279,6 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
             label.replaceChild(span, (editInput as HTMLInputElement));
             restoreButtons(buttonContainer, id);
             li.classList.remove('editing');
+            // Refocus on input field after canceling edit
+            todoInput.focus();
         }
     });
 
